@@ -1,9 +1,11 @@
 from random import randint
 
-def display_title():
+
+def display_title() -> None:
     print("Welcome to GUESS-THE-NUMBER")
 
-def prompt_difficulty():
+
+def prompt_difficulty() -> int:
     print("\nHere are the game difficulties:")
     print("\t1. Easy (0 - 100)")
     print("\t2. Medium (0 - 500)")
@@ -19,9 +21,9 @@ def prompt_difficulty():
         print(f"\nPlaying the game in {difficulties[difficulty_id]} mode.")
         return difficulty_id
 
-def get_number_to_guess(difficulty_id: int):
+
+def get_number_to_guess(difficulty_id: int) -> int:
     ranges = [(0, 100), (0, 500), (0, 1000)]
-    
     if difficulty_id < len(ranges): 
         lower_bound, higher_bound = ranges[difficulty_id]
     else:
@@ -29,17 +31,23 @@ def get_number_to_guess(difficulty_id: int):
         higher_bound = int(input("Enter the higher bound: "))
     return randint(lower_bound, higher_bound)
 
-game_over = False
-display_title()
-difficulty_id = prompt_difficulty()
-to_guess = get_number_to_guess(difficulty_id=difficulty_id)
 
-while not game_over:
-    user_guess = int(input("Enter your guess: "))
-    if user_guess < to_guess:
-        print("  The hidden number is higher.")
-    elif user_guess > to_guess:
-        print("  The hidden number is lower.")
-    else:
-        print("  Congratulations! You guessed the hidden number.")
-        game_over = True
+def play() -> None:
+    game_over = False
+    display_title()
+    difficulty_id = prompt_difficulty()
+    to_guess = get_number_to_guess(difficulty_id=difficulty_id)
+
+    while not game_over:
+        user_guess = int(input("Enter your guess: "))
+        if user_guess < to_guess:
+            print("  The hidden number is higher.")
+        elif user_guess > to_guess:
+            print("  The hidden number is lower.")
+        else:
+            print("  Congratulations! You guessed the hidden number.")
+            game_over = True
+            
+            
+if __name__ == "__main__":
+    play()
