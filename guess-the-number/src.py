@@ -17,21 +17,29 @@ def display_title() -> None:
     print("Welcome to GUESS-THE-NUMBER")
 
 
+def quit() -> None:
+    display_feedback(feedback="Bye!")
+    exit(0)
+
+
 def prompt_difficulty() -> int:
     print("\nHere are the game difficulties:")
     print("\t1. Easy (0 - 100)")
     print("\t2. Medium (0 - 500)")
     print("\t3. Hard (0 - 1000)")
     print("\t4. Custom range")
+    print("\t0. Quit")
     difficulty_id = prompt_number(prompt="Enter the difficulty you want to play:") - 1
     
     difficulties = ["Easy", "Medium", "Hard", "Custom"]
-    if difficulty_id < 0 or difficulty_id >= len(difficulties): 
+    if difficulty_id == -1:
+        quit()
+    elif difficulty_id < -1 or difficulty_id >= len(difficulties): 
         display_feedback(feedback="Please enter a valid difficulty.")
-        prompt_difficulty()
+        difficulty_id = prompt_difficulty()
     else:
         print(f"\nPlaying the game in {difficulties[difficulty_id]} mode.")
-        return difficulty_id
+    return difficulty_id
 
 
 def get_number_to_guess(difficulty_id: int) -> int:
@@ -56,7 +64,7 @@ def process_play_again(again_yn: str) -> None:
     if again_yn == "y":
         play()
     else:
-        display_feedback(feedback="Bye!")
+        quit()
 
 
 def play() -> None:
