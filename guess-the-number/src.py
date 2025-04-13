@@ -1,6 +1,14 @@
 from random import randint
 
 
+def prompt_number(prompt: str) -> int:
+    try:
+        return int(input(f"{prompt}: "))
+    except ValueError:
+        print("  Please enter a valid number.")
+        return prompt_number(prompt=prompt)
+
+
 def display_title() -> None:
     print("Welcome to GUESS-THE-NUMBER")
 
@@ -11,7 +19,7 @@ def prompt_difficulty() -> int:
     print("\t2. Medium (0 - 500)")
     print("\t3. Hard (0 - 1000)")
     print("\t4. Custom range")
-    difficulty_id = int(input("Enter the difficulty you want to play: ")) - 1
+    difficulty_id = prompt_number(prompt="Enter the difficulty you want to play") - 1
     
     difficulties = ["Easy", "Medium", "Hard", "Custom"]
     if difficulty_id < 0 or difficulty_id >= len(difficulties): 
@@ -27,8 +35,8 @@ def get_number_to_guess(difficulty_id: int) -> int:
     if difficulty_id < len(ranges): 
         lower_bound, higher_bound = ranges[difficulty_id]
     else:
-        lower_bound = int(input("Enter the lower bound: "))
-        higher_bound = int(input("Enter the higher bound: "))
+        lower_bound = prompt_number(prompt="Enter the lower bound")
+        higher_bound = prompt_number(prompt="Enter the higher bound")
     return randint(lower_bound, higher_bound)
 
 
@@ -39,7 +47,7 @@ def play() -> None:
     to_guess = get_number_to_guess(difficulty_id=difficulty_id)
 
     while not game_over:
-        user_guess = int(input("Enter your guess: "))
+        user_guess = prompt_number(prompt="Enter your guess")
         if user_guess < to_guess:
             print("  The hidden number is higher.")
         elif user_guess > to_guess:
