@@ -1,11 +1,15 @@
 from random import randint
 
 
+def display_feedback(feedback: str) -> None:
+    print(f"  {feedback}")
+
+
 def prompt_number(prompt: str) -> int:
     try:
         return int(input(f"{prompt}: "))
     except ValueError:
-        print("  Please enter a valid number.")
+        display_feedback(feedback="Please enter a valid number.")
         return prompt_number(prompt=prompt)
 
 
@@ -23,7 +27,7 @@ def prompt_difficulty() -> int:
     
     difficulties = ["Easy", "Medium", "Hard", "Custom"]
     if difficulty_id < 0 or difficulty_id >= len(difficulties): 
-        print("Please enter a valid difficulty.")
+        display_feedback(feedback="Please enter a valid difficulty.")
         prompt_difficulty()
     else:
         print(f"\nPlaying the game in {difficulties[difficulty_id]} mode.")
@@ -49,11 +53,11 @@ def play() -> None:
     while not game_over:
         user_guess = prompt_number(prompt="Enter your guess")
         if user_guess < to_guess:
-            print("  The hidden number is higher.")
+            display_feedback(feedback="The hidden number is higher.")
         elif user_guess > to_guess:
-            print("  The hidden number is lower.")
+            display_feedback(feedback="The hidden number is lower.")
         else:
-            print("  Congratulations! You guessed the hidden number.")
+            display_feedback(feedback="Congratulations! You guessed the hidden number.")
             game_over = True
             
             
