@@ -68,19 +68,22 @@ def process_play_again(again_yn: str) -> None:
 
 
 def play() -> None:
-    game_over = False
     display_title()
+    
+    guess_count = 0
+    game_over = False
     difficulty_id = prompt_difficulty()
     to_guess = get_number_to_guess(difficulty_id=difficulty_id)
 
     while not game_over:
         user_guess = prompt_number(prompt="Enter your guess:")
+        guess_count = guess_count + 1
         if user_guess < to_guess:
             display_feedback(feedback="The hidden number is higher.")
         elif user_guess > to_guess:
             display_feedback(feedback="The hidden number is lower.")
         else:
-            display_feedback(feedback="Congratulations! You guessed the hidden number.")
+            display_feedback(feedback=f"Congratulations! You guessed the hidden number in {guess_count} attempts.")
             game_over = True
     
     again_yn = prompt_yn(prompt="Would you like to play again?")
