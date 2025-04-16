@@ -1,6 +1,10 @@
 from random import randint
 
 
+DIFFICULTIES = ["Easy (0 - 100)", "Medium (0 - 500)", "Hard (0 - 1000)", "Custom Range"]
+RANGES = [(0, 100), (0, 500), (0, 1000)]
+
+
 def display_feedback(feedback: str) -> None:
     print(f"  {feedback}")
 
@@ -22,30 +26,30 @@ def quit() -> None:
     exit(0)
 
 
-def prompt_difficulty() -> int:
+def list_difficulties() -> None:
     print("\nHere are the game difficulties:")
-    print("\t1. Easy (0 - 100)")
-    print("\t2. Medium (0 - 500)")
-    print("\t3. Hard (0 - 1000)")
-    print("\t4. Custom range")
+    for index, difficulty in enumerate(DIFFICULTIES):
+        print(f"\t{index + 1}. {difficulty}")
     print("\t0. Quit")
+
+
+def prompt_difficulty() -> int:
+    list_difficulties()
     difficulty_id = prompt_number(prompt="Enter the difficulty you want to play:") - 1
     
-    difficulties = ["Easy", "Medium", "Hard", "Custom"]
     if difficulty_id == -1:
         quit()
-    elif difficulty_id < -1 or difficulty_id >= len(difficulties): 
+    elif difficulty_id < -1 or difficulty_id >= len(DIFFICULTIES): 
         display_feedback(feedback="Please enter a valid difficulty.")
         difficulty_id = prompt_difficulty()
     else:
-        print(f"\nPlaying the game in {difficulties[difficulty_id]} mode.")
+        print(f"\nPlaying the game in {DIFFICULTIES[difficulty_id]} mode.")
     return difficulty_id
 
 
 def get_number_to_guess(difficulty_id: int) -> int:
-    ranges = [(0, 100), (0, 500), (0, 1000)]
-    if difficulty_id < len(ranges): 
-        lower_bound, higher_bound = ranges[difficulty_id]
+    if difficulty_id < len(RANGES): 
+        lower_bound, higher_bound = RANGES[difficulty_id]
     else:
         lower_bound = prompt_number(prompt="Enter the lower bound:")
         higher_bound = prompt_number(prompt="Enter the higher bound:")
