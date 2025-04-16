@@ -53,7 +53,7 @@ def get_number_to_guess(difficulty_id: int) -> int:
 
 
 def prompt_yn(prompt: str) -> str:
-    user_choice = input(f"{prompt} (y/n) : ")
+    user_choice = input(f"\n{prompt} (y/n) : ")
     if user_choice.lower() not in ["y", "n"]:
         display_feedback(feedback="Please enter a valid choice.")
         user_choice = prompt_yn(prompt=prompt)
@@ -62,6 +62,7 @@ def prompt_yn(prompt: str) -> str:
 
 def process_play_again(again_yn: str) -> None:
     if again_yn == "y":
+        print()
         play()
     else:
         quit()
