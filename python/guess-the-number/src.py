@@ -36,10 +36,10 @@ def list_difficulties() -> None:
 def prompt_difficulty() -> int:
     list_difficulties()
     difficulty_id = prompt_number(prompt="Enter the difficulty you want to play:") - 1
-    
+
     if difficulty_id == -1:
         quit()
-    elif difficulty_id < -1 or difficulty_id >= len(DIFFICULTIES): 
+    elif difficulty_id < -1 or difficulty_id >= len(DIFFICULTIES):
         display_feedback(feedback="Please enter a valid difficulty.")
         difficulty_id = prompt_difficulty()
     else:
@@ -48,7 +48,7 @@ def prompt_difficulty() -> int:
 
 
 def get_number_to_guess(difficulty_id: int) -> int:
-    if difficulty_id < len(RANGES): 
+    if difficulty_id < len(RANGES):
         lower_bound, higher_bound = RANGES[difficulty_id]
     else:
         lower_bound = prompt_number(prompt="Enter the lower bound:")
@@ -74,7 +74,7 @@ def process_play_again(again_yn: str) -> None:
 
 def play() -> None:
     display_title()
-    
+
     guess_count = 0
     game_over = False
     difficulty_id = prompt_difficulty()
@@ -88,11 +88,13 @@ def play() -> None:
         elif user_guess > to_guess:
             display_feedback(feedback="The hidden number is lower.")
         else:
-            display_feedback(feedback=f"Congratulations! You guessed the hidden number in {guess_count} attempts.")
+            display_feedback(
+                feedback=f"Congratulations! You guessed the hidden number in {guess_count} attempts."
+            )
             game_over = True
-    
+
     again_yn = prompt_yn(prompt="Would you like to play again?")
-    process_play_again(again_yn=again_yn) 
+    process_play_again(again_yn=again_yn)
 
 
 if __name__ == "__main__":
