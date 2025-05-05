@@ -35,7 +35,7 @@ def play() -> None:
     display_title()
 
     while current_mistakes < MAX_MISTAKES:
-        print("The current word state:", current_word_state)
+        print("\nThe current word state:", current_word_state)
         user_guess = prompt_guess()
         if user_guess in guessed_characters:
             print("You have already guessed the given character.")
@@ -45,13 +45,15 @@ def play() -> None:
                 to_guess=word_to_guess, guessed_characters=guessed_characters
             )
             if current_word_state == word_to_guess:
-                print("Congratulations! You found the hidden word:", current_word_state)
+                print(
+                    "  Congratulations! You found the hidden word:", current_word_state
+                )
                 break
         else:
             current_mistakes = current_mistakes + 1
-            print("The given character is not found in the hidden word.")
+            print("  The given character is not found in the hidden word.")
             if current_mistakes == MAX_MISTAKES:
-                print("Max mistakes reached. Try again next time!")
+                print("  Max mistakes reached. Try again next time!")
 
 
 if __name__ == "__main__":
