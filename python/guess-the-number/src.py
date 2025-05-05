@@ -53,6 +53,7 @@ def get_number_to_guess(difficulty_id: int) -> int:
     else:
         lower_bound = prompt_number(prompt="Enter the lower bound:")
         higher_bound = prompt_number(prompt="Enter the higher bound:")
+        print()
     return randint(lower_bound, higher_bound)
 
 
