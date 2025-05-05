@@ -51,7 +51,10 @@ def play() -> None:
                 break
         else:
             current_mistakes = current_mistakes + 1
-            print("  The given character is not found in the hidden word.")
+            print(
+                "  The given character is not found in the hidden word.",
+                f"{MAX_MISTAKES - current_mistakes} allowed mistakes remaining.",
+            )
             if current_mistakes == MAX_MISTAKES:
                 print("  Max mistakes reached. Try again next time!")
 
