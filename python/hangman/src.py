@@ -2,10 +2,14 @@ import os
 from random import sample
 
 
+def display_feedback(feedback: str) -> None:
+    print(f"  {feedback}")
+
+
 def prompt_guess() -> None:
     user_guess = input("Enter your guess (one character): ")
     if len(user_guess) > 1:
-        print("Please enter one character.")
+        display_feedback(feedback="Please enter one character.")
         user_guess = prompt_guess()
     return user_guess
 
@@ -22,10 +26,6 @@ def get_word_state(word_to_guess: str, guessed_characters: list) -> str:
 
 def display_title() -> None:
     print("Welcome to HANGMAN")
-
-
-def display_feedback(feedback: str) -> None:
-    print(f"  {feedback}")
 
 
 def display_instance_count(word_to_guess: str, user_guess: str) -> None:
