@@ -44,11 +44,7 @@ def parse_dictionary_file(filename="dictionary.txt") -> list:
 
     try:
         with open(filename, "r", encoding="utf-8") as f:
-            file_dictionary = []
-            for line in f:
-                word = line.strip()
-                if word:
-                    file_dictionary.append(word.lower())
+            file_dictionary = [line.strip().lower() for line in f if line.strip()]
 
             if file_dictionary:
                 dictionary = file_dictionary
