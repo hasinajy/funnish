@@ -27,6 +27,13 @@ def display_feedback(feedback: str) -> None:
     print(f"  {feedback}")
 
 
+def display_instance_count(word_to_guess: str, user_guess: str) -> None:
+    instance_count = word_to_guess.count(user_guess)
+    display_feedback(
+        feedback=f"{instance_count} {'instance' if instance_count == 1 else 'instances'} found in the hidden word."
+    )
+
+
 def play() -> None:
     WORD_DICTIONARY = ["python", "java", "javascript", "typescript"]
     MAX_MISTAKES = 3
@@ -44,10 +51,7 @@ def play() -> None:
         if user_guess in guessed_characters:
             display_feedback(feedback="You have already guessed the given character.")
         elif user_guess in word_to_guess:
-            instance_count = word_to_guess.count(user_guess)
-            display_feedback(
-                feedback=f"{instance_count} {'instance' if instance_count == 1 else 'instances'} found in the hidden word."
-            )
+            display_instance_count(word_to_guess=word_to_guess, user_guess=user_guess)
             guessed_characters.append(user_guess)
             current_word_state = get_word_state(
                 to_guess=word_to_guess, guessed_characters=guessed_characters
