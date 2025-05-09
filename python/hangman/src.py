@@ -17,10 +17,9 @@ def prompt_guess() -> None:
 def get_word_state(word_to_guess: str, guessed_characters: list) -> str:
     word_state = ""
     for char in word_to_guess:
-        if char in guessed_characters:
-            word_state = word_state + char
-        else:
-            word_state = word_state + "_"
+        word_state = (
+            (word_state + char) if char in guessed_characters else (word_state + "_")
+        )
     return word_state
 
 
