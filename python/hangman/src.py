@@ -40,6 +40,9 @@ def play() -> None:
         if user_guess in guessed_characters:
             print("You have already guessed the given character.")
         elif user_guess in word_to_guess:
+            print(
+                f"  The hidden word contains {word_to_guess.count(user_guess)} of the given character."
+            )
             guessed_characters.append(user_guess)
             current_word_state = get_word_state(
                 to_guess=word_to_guess, guessed_characters=guessed_characters
