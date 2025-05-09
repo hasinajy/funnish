@@ -9,9 +9,9 @@ def prompt_guess() -> None:
     return user_guess
 
 
-def get_word_state(to_guess: str, guessed_characters: list) -> str:
+def get_word_state(word_to_guess: str, guessed_characters: list) -> str:
     word_state = ""
-    for char in to_guess:
+    for char in word_to_guess:
         if char in guessed_characters:
             word_state = word_state + char
         else:
@@ -38,23 +38,23 @@ def play() -> None:
     WORD_DICTIONARY = ["python", "java", "javascript", "typescript"]
     MAX_MISTAKES = 3
 
-    current_mistakes = 0
     word_to_guess = sample(population=WORD_DICTIONARY, k=1)[0]
     guessed_characters = []
     current_word_state: str = "_" * len(word_to_guess)
+    current_mistakes = 0
 
     display_title()
-
     while current_mistakes < MAX_MISTAKES:
         print("\nThe current word state:", current_word_state)
+
         user_guess = prompt_guess()
         if user_guess in guessed_characters:
             display_feedback(feedback="You have already guessed the given character.")
         elif user_guess in word_to_guess:
-            display_instance_count(word_to_guess=word_to_guess, user_guess=user_guess)
             guessed_characters.append(user_guess)
+            display_instance_count(word_to_guess=word_to_guess, user_guess=user_guess)
             current_word_state = get_word_state(
-                to_guess=word_to_guess, guessed_characters=guessed_characters
+                word_to_guess=word_to_guess, guessed_characters=guessed_characters
             )
             if current_word_state == word_to_guess:
                 display_feedback(
