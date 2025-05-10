@@ -1,99 +1,100 @@
 import os
 from random import sample
 
+DEFAULT_DICTIONARY = ["python", "java", "javascript", "typescript"]
+MAX_MISTAKES = 3
+
 
 def display_feedback(feedback: str) -> None:
+    """Display feedback to the user with indentation."""
     print(f"  {feedback}")
 
 
-def prompt_guess() -> None:
-    user_guess = input("Enter your guess (one character): ")
-    if len(user_guess) > 1:
-        display_feedback(feedback="Please enter one character.")
-        user_guess = prompt_guess()
-    return user_guess
+def prompt_guess() -> str:
+    """Prompt the user for a single letter guess, validating input."""
+    while True:
+        guess = input("Enter your guess (one letter): ").lower()
+        if len(guess) != 1:
+            display_feedback("Please enter exactly one character.")
+        elif not guess.isalpha():
+            display_feedback("Please enter a letter (A-Z).")
+        else:
+            return guess
 
 
-def get_word_state(word_to_guess: str, guessed_characters: list) -> str:
-    word_state = ""
-    for char in word_to_guess:
-        word_state = (
-            (word_state + char) if char in guessed_characters else (word_state + "_")
-        )
-    return word_state
+def get_word_state(word_to_guess: str, guessed_letters: list[str]) -> str:
+    """Return the current state of the word with guessed letters revealed."""
+    return "".join(char if char in guessed_letters else "_" for char in word_to_guess)
 
 
 def display_title() -> None:
+    """Display the game title."""
     print("Welcome to HANGMAN")
 
 
-def display_instance_count(word_to_guess: str, user_guess: str) -> None:
-    instance_count = word_to_guess.count(user_guess)
+def display_letter_count(word_to_guess: str, guess: str) -> None:
+    """Display the number of occurrences of the guessed letter in the word."""
+    count = word_to_guess.count(guess)
     display_feedback(
-        feedback=f"{instance_count} {'instance' if instance_count == 1 else 'instances'} found in the hidden word."
+        f"{count} {'instance' if count == 1 else 'instances'} found in the hidden word."
     )
 
 
-def parse_dictionary_file(filename="dictionary.txt") -> list:
-    dictionary = ["python", "java", "javascript", "typescript"]
+def load_dictionary(filename: str = "dictionary.txt") -> list[str]:
+    """Load a list of words from a file or use the default dictionary."""
     if not os.path.exists(filename):
-        display_feedback(
-            feedback="Dictionary file not found. Using the default dictionary."
-        )
-        return dictionary
+        display_feedback("Dictionary file not found. Using default dictionary.")
+        return DEFAULT_DICTIONARY
 
     try:
-        with open(filename, "r", encoding="utf-8") as f:
-            file_dictionary = [line.strip().lower() for line in f if line.strip()]
+        with open(filename, "r", encoding="utf-8") as file:
+            words = [line.strip().lower() for line in file if line.strip()]
+            if not words:
+                display_feedback("Dictionary file is empty. Using default dictionary.")
+                return DEFAULT_DICTIONARY
+            return words
+    except (FileNotFoundError, UnicodeDecodeError):
+        display_feedback("Error reading dictionary file. Using default dictionary.")
+        return DEFAULT_DICTIONARY
 
-            if file_dictionary:
-                dictionary = file_dictionary
-            else:
-                display_feedback(
-                    feedback="No word list found from the file. Using the default dictionary."
-                )
-    except Exception:
-        display_feedback(
-            feedback="An error occurred while reading the file. Using the default dictionary."
-        )
-    return dictionary
+
+def play_round(word_to_guess: str) -> bool:
+    """Play one round of Hangman, returning True if the player wins."""
+    guessed_letters = []
+    word_state = "_" * len(word_to_guess)
+    mistakes = 0
+
+    while mistakes < MAX_MISTAKES:
+        print("\nCurrent word state:", word_state)
+        guess = prompt_guess()
+
+        if guess in guessed_letters:
+            display_feedback("You already guessed that letter.")
+            continue
+
+        guessed_letters.append(guess)
+        if guess in word_to_guess:
+            display_letter_count(word_to_guess, guess)
+            word_state = get_word_state(word_to_guess, guessed_letters)
+            if word_state == word_to_guess:
+                display_feedback(f"Congratulations! You found the word: {word_state}")
+                return True
+        else:
+            mistakes += 1
+            display_feedback(
+                f"Letter not in word. {MAX_MISTAKES - mistakes} mistakes remaining."
+            )
+            if mistakes == MAX_MISTAKES:
+                display_feedback(f"Game over! The word was: {word_to_guess}")
+                return False
 
 
 def play() -> None:
+    """Run the Hangman game."""
     display_title()
-
-    WORD_DICTIONARY = parse_dictionary_file()
-    MAX_MISTAKES = 3
-
-    word_to_guess = sample(population=WORD_DICTIONARY, k=1)[0]
-    guessed_characters = []
-    current_word_state: str = "_" * len(word_to_guess)
-    current_mistakes = 0
-
-    while current_mistakes < MAX_MISTAKES:
-        print("\nThe current word state:", current_word_state)
-
-        user_guess = prompt_guess()
-        if user_guess in guessed_characters:
-            display_feedback(feedback="You have already guessed the given character.")
-        elif user_guess in word_to_guess:
-            guessed_characters.append(user_guess)
-            display_instance_count(word_to_guess=word_to_guess, user_guess=user_guess)
-            current_word_state = get_word_state(
-                word_to_guess=word_to_guess, guessed_characters=guessed_characters
-            )
-            if current_word_state == word_to_guess:
-                display_feedback(
-                    feedback=f"Congratulations! You found the hidden word: {current_word_state}"
-                )
-                break
-        else:
-            current_mistakes = current_mistakes + 1
-            display_feedback(
-                feedback=f"The given character is not found in the hidden word. {MAX_MISTAKES - current_mistakes} allowed mistakes remaining.",
-            )
-            if current_mistakes == MAX_MISTAKES:
-                display_feedback(feedback="Max mistakes reached. Try again next time!")
+    dictionary = load_dictionary()
+    word_to_guess = sample(dictionary, 1)[0]
+    play_round(word_to_guess)
 
 
 if __name__ == "__main__":
