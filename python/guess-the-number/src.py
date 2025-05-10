@@ -1,101 +1,104 @@
 from random import randint
 
-
-DIFFICULTIES = ["Easy (0 - 100)", "Medium (0 - 500)", "Hard (0 - 1000)", "Custom Range"]
-RANGES = [(0, 100), (0, 500), (0, 1000)]
+DIFFICULTY_RANGES = {
+    "Easy (0 - 100)": (0, 100),
+    "Medium (0 - 500)": (0, 500),
+    "Hard (0 - 1000)": (0, 1000),
+    "Custom Range": None,
+}
 
 
 def display_feedback(feedback: str) -> None:
+    """Display feedback to the user with consistent formatting."""
     print(f"  {feedback}")
 
 
 def prompt_number(prompt: str) -> int:
-    try:
-        return int(input(f"{prompt} "))
-    except ValueError:
-        display_feedback(feedback="Please enter a valid number.")
-        return prompt_number(prompt=prompt)
+    """Prompt the user for a number and validate input."""
+    while True:
+        try:
+            return int(input(f"{prompt} "))
+        except ValueError:
+            display_feedback("Please enter a valid number.")
 
 
 def display_title() -> None:
-    print("Welcome to GUESS-THE-NUMBER")
-
-
-def quit() -> None:
-    display_feedback(feedback="Bye!")
-    exit(0)
+    """Display the game title."""
+    print("\n=== Welcome to GUESS-THE-NUMBER ===")
 
 
 def list_difficulties() -> None:
-    print("\nHere are the game difficulties:")
-    for index, difficulty in enumerate(DIFFICULTIES):
-        print(f"\t{index + 1}. {difficulty}")
+    """Display available difficulty options."""
+    print("\nGame difficulties:")
+    for index, difficulty in enumerate(DIFFICULTY_RANGES, 1):
+        print(f"\t{index}. {difficulty}")
     print("\t0. Quit")
 
 
-def prompt_difficulty() -> int:
-    list_difficulties()
-    difficulty_id = prompt_number(prompt="Enter the difficulty you want to play:") - 1
+def prompt_difficulty() -> tuple[int, str]:
+    """Prompt user to select a difficulty and return its index and name."""
+    while True:
+        list_difficulties()
+        choice = prompt_number("Enter the difficulty you want to play:")
+        if choice == 0:
+            display_feedback("Bye!")
+            exit(0)
+        if 1 <= choice <= len(DIFFICULTY_RANGES):
+            difficulty = list(DIFFICULTY_RANGES.keys())[choice - 1]
+            print(f"\nPlaying in {difficulty} mode.")
+            return choice - 1, difficulty
+        display_feedback("Please enter a valid difficulty.")
 
-    if difficulty_id == -1:
-        quit()
-    elif difficulty_id < -1 or difficulty_id >= len(DIFFICULTIES):
-        display_feedback(feedback="Please enter a valid difficulty.")
-        difficulty_id = prompt_difficulty()
+
+def get_number_to_guess(difficulty_id: int, difficulty: str) -> int:
+    """Generate a random number to guess based on the difficulty."""
+    if DIFFICULTY_RANGES[difficulty] is not None:
+        lower_bound, higher_bound = DIFFICULTY_RANGES[difficulty]
     else:
-        print(f"\nPlaying the game in {DIFFICULTIES[difficulty_id]} mode.")
-    return difficulty_id
-
-
-def get_number_to_guess(difficulty_id: int) -> int:
-    if difficulty_id < len(RANGES):
-        lower_bound, higher_bound = RANGES[difficulty_id]
-    else:
-        lower_bound = prompt_number(prompt="Enter the lower bound:")
-        higher_bound = prompt_number(prompt="Enter the higher bound:")
-        print()
+        lower_bound = prompt_number("Enter the lower bound:")
+        higher_bound = prompt_number("Enter the higher bound:")
+        if lower_bound >= higher_bound:
+            display_feedback("Lower bound must be less than higher bound.")
+            return get_number_to_guess(difficulty_id, difficulty)
     return randint(lower_bound, higher_bound)
 
 
-def prompt_yn(prompt: str) -> str:
-    user_choice = input(f"\n{prompt} (y/n) : ")
-    if user_choice.lower() not in ["y", "n"]:
-        display_feedback(feedback="Please enter a valid choice.")
-        user_choice = prompt_yn(prompt=prompt)
-    return user_choice
+def prompt_yes_no(prompt: str) -> bool:
+    """Prompt the user for a yes/no choice and return a boolean."""
+    while True:
+        choice = input(f"\n{prompt} (y/n): ").lower()
+        if choice in ["y", "n"]:
+            return choice == "y"
+        display_feedback("Please enter 'y' or 'n'.")
 
 
-def process_play_again(again_yn: str) -> None:
-    if again_yn == "y":
-        print()
-        play()
-    else:
-        quit()
+def play_round(number_to_guess: int) -> bool:
+    """Run the guessing loop for a single round and return whether to play again."""
+    guess_count = 0
+    while True:
+        guess = prompt_number("Enter your guess:")
+        guess_count += 1
+        if guess < number_to_guess:
+            display_feedback("The hidden number is higher.")
+        elif guess > number_to_guess:
+            display_feedback("The hidden number is lower.")
+        else:
+            display_feedback(
+                f"Congratulations! You guessed the number in {guess_count} attempts."
+            )
+            break
+    return prompt_yes_no("Would you like to play again?")
 
 
 def play() -> None:
-    display_title()
-
-    guess_count = 0
-    game_over = False
-    difficulty_id = prompt_difficulty()
-    to_guess = get_number_to_guess(difficulty_id=difficulty_id)
-
-    while not game_over:
-        user_guess = prompt_number(prompt="Enter your guess:")
-        guess_count = guess_count + 1
-        if user_guess < to_guess:
-            display_feedback(feedback="The hidden number is higher.")
-        elif user_guess > to_guess:
-            display_feedback(feedback="The hidden number is lower.")
-        else:
-            display_feedback(
-                feedback=f"Congratulations! You guessed the hidden number in {guess_count} attempts."
-            )
-            game_over = True
-
-    again_yn = prompt_yn(prompt="Would you like to play again?")
-    process_play_again(again_yn=again_yn)
+    """Initialize and manage game rounds."""
+    while True:
+        display_title()
+        difficulty_id, difficulty = prompt_difficulty()
+        number_to_guess = get_number_to_guess(difficulty_id, difficulty)
+        if not play_round(number_to_guess):
+            break
+    display_feedback("Thanks for playing!")
 
 
 if __name__ == "__main__":
