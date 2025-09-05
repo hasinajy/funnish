@@ -1,0 +1,15 @@
+services:
+  database:
+    image: postgres:16-bookworm
+    container_name: nest-postgres-dev
+    restart: always
+    environment:
+      POSTGRES_USER: dev_user 
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nestjs_rest_api
+    ports:
+      - '5432:5432'
+    volumes:
+      - nest-postgres-data:/var/lib/postgresql/data
+volumes:
+  nest-postgres-data:
