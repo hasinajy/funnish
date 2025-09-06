@@ -14,4 +14,13 @@ export class TasksService {
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
     return this.prisma.task.create({ data: createTaskDto });
   }
+
+  async update(taskId: string, createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.prisma.task.update({
+      where: {
+        id: parseInt(taskId)
+      },
+      data: createTaskDto
+    });
+  }
 }

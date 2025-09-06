@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dtos/create-task.dto';
 
@@ -18,9 +26,9 @@ export class TasksController {
   }
 
   // TODO: Implement the update endpoint
-  @Put()
-  update() {
-    return {};
+  @Put(':id')
+  update(@Param('id') taskId: string, @Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.update(taskId, createTaskDto);
   }
 
   // TODO: Implement the remove endpoint
