@@ -23,4 +23,12 @@ export class TasksService {
       data: createTaskDto
     });
   }
+
+  async remove(taskId: string): Promise<Task> {
+    return this.prisma.task.delete({
+      where: {
+        id: parseInt(taskId)
+      }
+    });
+  }
 }

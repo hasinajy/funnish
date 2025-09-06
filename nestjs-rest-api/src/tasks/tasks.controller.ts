@@ -29,9 +29,8 @@ export class TasksController {
     return this.tasksService.update(taskId, createTaskDto);
   }
 
-  // TODO: Implement the remove endpoint
-  @Delete()
-  remove() {
-    return {};
+  @Delete(':id')
+  remove(@Param('id') taskId: string) {
+    return this.tasksService.remove(taskId);
   }
 }
