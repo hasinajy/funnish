@@ -14,6 +14,11 @@ import { TaskDto } from './dtos/task.dto';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
+  @Get(':id')
+  findById(@Param('id') taskId: string) {
+    return this.tasksService.findById(taskId);
+  }
+
   @Get()
   findAll() {
     return this.tasksService.findAll();

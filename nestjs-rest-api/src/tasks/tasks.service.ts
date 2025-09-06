@@ -8,6 +8,20 @@ import { PrismaClientKnownRequestError } from 'generated/prisma/runtime/library'
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findById(taskId: string): Promise<Task> {
+    const task = await this.prisma.task.findUnique({
+      where: {
+        id: parseInt(taskId)
+      }
+    });
+
+    if (!task) {
+      throw new NotFoundException(`Task with ID "${taskId}" not found.`);
+    }
+
+    return task;
+  }
+
   async findAll(): Promise<Task[]> {
     return this.prisma.task.findMany();
   }
