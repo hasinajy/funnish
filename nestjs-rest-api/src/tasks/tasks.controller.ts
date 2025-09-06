@@ -19,13 +19,11 @@ export class TasksController {
     return this.tasksService.findAll();
   }
 
-  // TODO: Implement the create endpoint
   @Post()
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(createTaskDto);
   }
 
-  // TODO: Implement the update endpoint
   @Put(':id')
   update(@Param('id') taskId: string, @Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.update(taskId, createTaskDto);
