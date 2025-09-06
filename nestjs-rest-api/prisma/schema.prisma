@@ -17,4 +17,5 @@ datasource db {
 model Task {
   id          Int    @id @default(autoincrement())
   description String
+  priority    Int    @default(0)
 }
