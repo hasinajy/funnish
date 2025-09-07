@@ -1,9 +1,10 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { TaskPriority } from '../enums/task-priority.enum';
 
 export class TaskDto {
   @IsString()
   description: string;
 
-  @IsInt()
-  priority: number;
+  @IsEnum(TaskPriority)
+  priority: TaskPriority;
 }
