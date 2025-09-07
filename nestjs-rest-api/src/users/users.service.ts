@@ -24,4 +24,10 @@ export class UsersService {
       throw error;
     }
   }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return await this.prismaService.user.findUnique({
+      where: { username: username }
+    });
+  }
 }
