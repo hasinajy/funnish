@@ -39,4 +39,17 @@ export class AuthService {
       }
     };
   }
+
+  async register(username: string, password: string) {
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const user = await this.usersService.create({
+      username,
+      passwordHash
+    });
+
+    const { passwordHash: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
 }
